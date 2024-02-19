@@ -1,7 +1,24 @@
 from win11toast import toast
 import datetime as dt
 from datetime import *
+import time
 import random
+import re
+
+remind_times = ""
+suspend = False
+
+try:
+    remind_file = open("remindtimes.txt", "r+")
+    remind_times = remind_file.read()
+except:
+    raise Exception("Failed to access file")
+
+def suspend():
+    suspend = True
+
+def close_file():
+    remind_file.close()
 
 def notif():
     toast("Focus check-in")
@@ -28,30 +45,40 @@ def random_time(t):
         hour -= 1
     return dt.time(hour, min, sec)
 
-def string_time(t):
+def time_to_string(t):
     h = t.hour
     m = t.minute
-    mer = "am"
-    if (h > 12):
-        mer = "pm"
     if (m < 10):
         m = "0" + str(m)
-
-    s = (str(h) + ":" + str(m) + mer)
+    s = (str(h) + ":" + str(m))
     return(s)
 
-# def randomize_times(times):
-#     for count, t in enumerate(times):
-#         t = random_time(t)
-#         times.pop(count)
-#         times.insert(count, t)
+def string_to_time(s):
+    s = re.split('[: ]', s)
+    h = int(s[0])
+    m = int(s[1])
+    if (len(s) == 3):
+        ap = s[2].lower()
+        if (ap == "am" and h == 0):
+             h = 12
+        if (ap == "pm" and h != 12):
+            h += 12
+    t = dt.time(h, m, 0)
+    return t
+
+def begin_notif_time():
+    while(True != suspend):
+        curr_time = datetime.now()
+        rem_times = remind_file.read()
+        rem_times = rem_times.splitlines()
+        for t in rem_times:
+            t = string_to_time(t)
+            curr_time = dt.time(curr_time.hour, curr_time.minute, 0)
+            if (t == curr_time):
+                notif()
+        time.sleep(60)
 
 
-# def to_military_time(h, m, mer):
-#     if (mer == "am" and h == 12):
-#         h = 0
-#     if (mer == "pm"):
-#         h = int(h)
-#         h += 12
-#     m = int(m)
-#     return dt.time(h, m, 0)
+def close_program():
+   suspend()
+   close_file()
