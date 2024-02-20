@@ -2,8 +2,9 @@ import reminders as rem
 import gui
 import atexit
 
-gui.initialize()
 
+
+gui.initialize()
 atexit.register(rem.close_program)
 
 

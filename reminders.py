@@ -4,8 +4,11 @@ from datetime import *
 import time
 import random
 import re
+import threading
+import sys
 
 remind_times = ""
+global suspend
 suspend = False
 
 try:
@@ -14,8 +17,18 @@ try:
 except:
     raise Exception("Failed to access file")
 
-def suspend():
+def do_suspend():
+    global suspend
     suspend = True
+
+def unsuspend():
+    global suspend
+    suspend = False
+    begin_notif_time()
+
+def check_suspend():
+    global suspend
+    return suspend
 
 def close_file():
     remind_file.close()
@@ -54,6 +67,7 @@ def time_to_string(t):
     return(s)
 
 def string_to_time(s):
+    print("recieved " + s)
     s = re.split('[: ]', s)
     h = int(s[0])
     m = int(s[1])
@@ -67,18 +81,27 @@ def string_to_time(s):
     return t
 
 def begin_notif_time():
-    while(True != suspend):
+    stop_loop = False
+    while (not stop_loop):
+        print("loop")
         curr_time = datetime.now()
-        rem_times = remind_file.read()
-        rem_times = rem_times.splitlines()
+        rem_times = open("remindtimes.txt", "r+")
+        rem_times = rem_times.read()
+        rem_times = rem_times.splitlines(True)
+        print(rem_times)
         for t in rem_times:
+            print("Testing time " + t)
             t = string_to_time(t)
             curr_time = dt.time(curr_time.hour, curr_time.minute, 0)
+            print("current time: " + time_to_string(curr_time))
             if (t == curr_time):
                 notif()
-        time.sleep(60)
+        time.sleep(10)
+        stop_loop = check_suspend()
 
 
-def close_program():
-   suspend()
+
+def close_program(*args):
+   do_suspend()
    close_file()
+   sys.exit(0)

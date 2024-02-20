@@ -6,6 +6,7 @@ import reminders as rem
 import datetime as dt
 from datetime import *
 import sys
+import threading
 
 
 def initialize():
@@ -20,12 +21,14 @@ def initialize():
     body_font = tkFont.Font(family="Helvetica", size=14, weight=NORMAL)
 
     run_main_screen()
+    window.protocol("WM_DELETE_WINDOW", rem.close_program)
     window.mainloop()
 
 
 
+
+
 def run_main_screen(*args):
-   
    destroy_active_frames()
    main_screen_frame = tk.Frame(master=window, padx=20, pady=20) 
 
@@ -35,7 +38,6 @@ def run_main_screen(*args):
    quit_button = tk.Button(text="Quit", master=main_screen_frame, padx=10, pady=10)
 
    main_screen_label = tk.Label(text="Reminders", master=main_screen_frame, padx=20, pady=20)
-
    main_screen_frame.grid()
    main_screen_frame.grid_columnconfigure(0, minsize=30)
    main_screen_frame.grid_columnconfigure(4, minsize=30)
@@ -48,11 +50,16 @@ def run_main_screen(*args):
    edit_times_button.grid(column=2, row = 3)
    quit_button.grid(column=2, row = 4)
 
+   def do_start_button(event):
+      rem_thread = threading.Thread(target = rem.unsuspend)
+      screen_thread = threading.Thread(target=run_operating_screen)
+      rem_thread.start()
+      screen_thread.start()
    #bind buttons
-   start_button.bind("<Button-1>", run_operating_screen)
+   start_button.bind("<Button-1>", do_start_button)
 #    zen_mode_button.bind("<Button-1>", )
    edit_times_button.bind("<Button-1>", run_edit_screen)
-   quit_button.bind("<Button-1>", sys.exit)
+   quit_button.bind("<Button-1>", rem.close_program)
 
 def run_edit_screen(event):
    destroy_active_frames()
@@ -93,10 +100,9 @@ def run_edit_screen(event):
    confirm_edit_button.grid(row=3, column=2)
    confirm_edit_button.bind("<Button-1>", finish_edit_times)
    
-def run_operating_screen(event):
+def run_operating_screen(*args):
 
    destroy_active_frames()
-   rem.begin_notif_time()
    oper_frame = tk.Frame(master=window, padx=20, pady=20)
    oper_label = tk.Label(text="Running...", master=window, padx=20, pady=20)
    back_button = tk.Button(text ="Menu", master=window, padx=5, pady=5)
@@ -111,9 +117,11 @@ def run_operating_screen(event):
    suspend_button.grid(row=2, column=2)
 
    def do_suspend_button(event):
+      rem.do_suspend()
       suspend_label.grid(row=3, column=2)
       suspend_button.grid_remove()
       resume_button.grid(row=2, column=2)
+      
    
    def do_resume_button(event):
       suspend_label.grid_remove
@@ -122,6 +130,7 @@ def run_operating_screen(event):
 
    back_button.bind("<Button-1>", run_main_screen)
    suspend_button.bind("<Button-1>", do_suspend_button)
+   resume_button.bind("<Button-1>", do_resume_button)
 
 
 def destroy_active_frames():
