@@ -29,8 +29,6 @@ def initialize():
 
 
 
-
-
 def run_main_screen(*args):
    destroy_active_frames()
    main_screen_frame = tk.Frame(master=window, padx=20, pady=20) 
@@ -64,6 +62,8 @@ def run_main_screen(*args):
    edit_times_button.bind("<Button-1>", run_edit_screen)
    quit_button.bind("<Button-1>", rem.close_program)
 
+
+
 def run_edit_screen(event):
    destroy_active_frames()
    edit_frame = tk.Frame(master=window, padx=20, pady=20)
@@ -88,21 +88,29 @@ def run_edit_screen(event):
    def finish_edit_times(event):
       user_time_text = edit_text_box.get(1.0, "end-1c")
       user_time_text = user_time_text.splitlines()
+      #convert to times and sort
+      for n, t in enumerate(user_time_text):
+         user_time_text[n] = rem.string_to_time(t)
+      user_time_text.sort()
+      #keep old times
       remind_file = open("remindtimes.txt", "r+")
       old_times = remind_file.read()
-      remind_file.close()
+      #clear file
       remind_file = open("remindtimes.txt", "w")
       remind_file.write("")
-      remind_file.close()
+      #begin append mode
       remind_file = open("remindtimes.txt", "a")
       for t in user_time_text:
+         t = rem.time_to_string(t)
          if t in old_times:
             remind_file.write(t + "\n") #if the time was already in the file, don't randomize again
          else:
-            t = rem.string_to_time(t) #take as time object, randomize, and put back as string
+            #randomize and put back as string
+            t = rem.string_to_time(t)
             t = rem.random_time(t)
             t = rem.time_to_string(t)
             remind_file.write(t + "\n")
+      
       run_main_screen()
 
    big_edit_label.grid(columnspan=3, row=0, column=1)
@@ -111,6 +119,8 @@ def run_edit_screen(event):
    confirm_edit_button.grid(row=3, column=2)
    confirm_edit_button.bind("<Button-1>", finish_edit_times)
    
+
+
 def run_operating_screen(*args):
 
    destroy_active_frames()
@@ -120,12 +130,18 @@ def run_operating_screen(*args):
    suspend_button = tk.Button(text="Suspend", master=window, padx=5, pady=5)
    suspend_label = tk.Label(text="Program Suspended", master=window, padx=5, pady=5, font=small_font)
    resume_button = tk.Button(text="Resume", master=window, padx=5, pady=5)
-   
+   global body_font
+   next_rem_label = tk.Label(master=window, font=body_font, padx=5, pady=5)  
+   #set up next reminder display
+   s = rem.next_rem_time_string()
+   next_rem_label.config(text=s)
+
    oper_frame.grid()
    oper_frame.columnconfigure(1, minsize=35)
    oper_label.grid(columnspan=3, rowspan=2, row=0, column=0)
-   back_button.grid(row=2, column=0)
-   suspend_button.grid(row=2, column=2)
+   next_rem_label.grid(columnspan=3, row=2, column=0)
+   back_button.grid(row=3, column=0)
+   suspend_button.grid(row=3, column=2)
 
    def do_suspend_button(event):
       rem.do_suspend()
@@ -135,13 +151,18 @@ def run_operating_screen(*args):
       
    
    def do_resume_button(event):
-      suspend_label.grid_remove
+      suspend_label.grid_remove()
       resume_button.grid_remove()
       suspend_button.grid(row=2, column=2)
+   
+   def do_back_button(event):
+      rem.do_suspend()
+      run_main_screen()
 
-   back_button.bind("<Button-1>", run_main_screen)
+   back_button.bind("<Button-1>", do_back_button)
    suspend_button.bind("<Button-1>", do_suspend_button)
    resume_button.bind("<Button-1>", do_resume_button)
+
 
 
 def destroy_active_frames():
