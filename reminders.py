@@ -42,7 +42,7 @@ def random_time(t):
     min = t.minute
     hour = t.hour
 
-    ##reminders within 5 minutes of midnight are not random, i don't wanna deal with day change crap
+    ##reminders within 5 minutes of midnight are not random, I don't want to worry about day change
     if (hour == 0 and min <= 5):
         return dt.time(hour, min, sec)
     if (hour == 23 and min >= 55):
@@ -56,6 +56,7 @@ def random_time(t):
     if (min < 0):
         min = min + 60
         hour -= 1
+    sec = random.randint(0, 59)
     return dt.time(hour, min, sec)
 
 def time_to_string(t):
@@ -67,28 +68,27 @@ def time_to_string(t):
     return(s)
 
 def string_to_time(s):
-    print("recieved " + s)
-    s = re.split('[: ]', s)
-    h = int(s[0])
-    m = int(s[1])
-    if (len(s) == 3):
+    alpha = re.findall("[a-zA-Z]", s) 
+    s = re.split('[:]', s)   
+    h = int(re.findall("[0-9]", s[0]))
+    m = int(re.findall("[0-9]", s[1]))
+    if (alpha != ""):
         ap = s[2].lower()
-        if (ap == "am" and h == 0):
-             h = 12
-        if (ap == "pm" and h != 12):
-            h += 12
+    if (ap == "am" and h == 0):
+        h = 12
+    if (ap == "pm" and h != 12):
+        h += 12
+    
     t = dt.time(h, m, 0)
     return t
 
 def begin_notif_time():
-    stop_loop = False
-    while (not stop_loop):
-        print("loop")
+    suspend = False
+    while (not suspend):
         curr_time = datetime.now()
         rem_times = open("remindtimes.txt", "r+")
         rem_times = rem_times.read()
         rem_times = rem_times.splitlines(True)
-        print(rem_times)
         for t in rem_times:
             print("Testing time " + t)
             t = string_to_time(t)
@@ -96,8 +96,8 @@ def begin_notif_time():
             print("current time: " + time_to_string(curr_time))
             if (t == curr_time):
                 notif()
-        time.sleep(10)
-        stop_loop = check_suspend()
+        time.sleep(1)
+        suspend = check_suspend()
 
 
 

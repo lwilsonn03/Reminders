@@ -20,6 +20,9 @@ def initialize():
     global body_font
     body_font = tkFont.Font(family="Helvetica", size=14, weight=NORMAL)
 
+    global small_font
+    small_font = tkFont.Font(family="Helvetica", size = 11, weight=NORMAL)
+
     run_main_screen()
     window.protocol("WM_DELETE_WINDOW", rem.close_program)
     window.mainloop()
@@ -85,13 +88,21 @@ def run_edit_screen(event):
    def finish_edit_times(event):
       user_time_text = edit_text_box.get(1.0, "end-1c")
       user_time_text = user_time_text.splitlines()
+      remind_file = open("remindtimes.txt", "r+")
+      old_times = remind_file.read()
+      remind_file.close()
       remind_file = open("remindtimes.txt", "w")
       remind_file.write("")
+      remind_file.close()
       remind_file = open("remindtimes.txt", "a")
       for t in user_time_text:
-         t = rem.string_to_time(t)
-         t = rem.time_to_string(t)
-         remind_file.write(t + "\n")
+         if t in old_times:
+            remind_file.write(t + "\n") #if the time was already in the file, don't randomize again
+         else:
+            t = rem.string_to_time(t) #take as time object, randomize, and put back as string
+            t = rem.random_time(t)
+            t = rem.time_to_string(t)
+            remind_file.write(t + "\n")
       run_main_screen()
 
    big_edit_label.grid(columnspan=3, row=0, column=1)
@@ -107,7 +118,7 @@ def run_operating_screen(*args):
    oper_label = tk.Label(text="Running...", master=window, padx=20, pady=20)
    back_button = tk.Button(text ="Menu", master=window, padx=5, pady=5)
    suspend_button = tk.Button(text="Suspend", master=window, padx=5, pady=5)
-   suspend_label = tk.Label(text="Program Suspended", master=window, padx=5, pady=5)
+   suspend_label = tk.Label(text="Program Suspended", master=window, padx=5, pady=5, font=small_font)
    resume_button = tk.Button(text="Resume", master=window, padx=5, pady=5)
    
    oper_frame.grid()
@@ -118,7 +129,7 @@ def run_operating_screen(*args):
 
    def do_suspend_button(event):
       rem.do_suspend()
-      suspend_label.grid(row=3, column=2)
+      suspend_label.grid(columnspan=3, row=3, column=0)
       suspend_button.grid_remove()
       resume_button.grid(row=2, column=2)
       
