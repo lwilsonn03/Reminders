@@ -1,3 +1,5 @@
+# Seperate file for simple testing
+
 import reminders as rem
 
 time_a = "12:00pm"
