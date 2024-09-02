@@ -8,3 +8,6 @@ Future implementations:
 - Zen mode- displays no information about the time of the next reminder. Only widget is a back button.
 - Customizable reminder message
 - Cleaner GUI and consistent window size
+
+Update September 2, 2024:
+  I haven't intended to abandon this project but I also haven't worked on it in a long time. I hope to pick it back up when time permits.
