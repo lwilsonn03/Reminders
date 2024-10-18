@@ -5,8 +5,9 @@ from tkinter import ttk
 import reminders as rem
 import datetime as dt
 from datetime import *
-import sys
+from PIL import ImageTk, Image
 import threading
+
 
 
 def initialize():
@@ -17,10 +18,8 @@ def initialize():
     defaultFont = tkFont.nametofont("TkDefaultFont")
     defaultFont.configure(size=22, family="Arial")
 
-    global body_font
+    global body_font, small_font
     body_font = tkFont.Font(family="Helvetica", size=14, weight=NORMAL)
-
-    global small_font
     small_font = tkFont.Font(family="Helvetica", size = 11, weight=NORMAL)
 
     run_main_screen()
@@ -58,7 +57,7 @@ def run_main_screen(*args):
       screen_thread.start()
    #bind buttons
    start_button.bind("<Button-1>", do_start_button)
-#    zen_mode_button.bind("<Button-1>", )
+   zen_mode_button.bind("<Button-1>", run_zen_screen)
    edit_times_button.bind("<Button-1>", run_edit_screen)
    quit_button.bind("<Button-1>", rem.close_program)
 
@@ -130,11 +129,12 @@ def run_operating_screen(*args):
    suspend_button = tk.Button(text="Suspend", master=window, padx=5, pady=5)
    suspend_label = tk.Label(text="Program Suspended", master=window, padx=5, pady=5, font=small_font)
    resume_button = tk.Button(text="Resume", master=window, padx=5, pady=5)
-   global body_font
    next_rem_label = tk.Label(master=window, font=body_font, padx=5, pady=5)  
    #set up next reminder display
+
    s = rem.next_rem_time_string()
    next_rem_label.config(text=s)
+
 
    oper_frame.grid()
    oper_frame.columnconfigure(1, minsize=35)
@@ -163,7 +163,25 @@ def run_operating_screen(*args):
    suspend_button.bind("<Button-1>", do_suspend_button)
    resume_button.bind("<Button-1>", do_resume_button)
 
+def run_zen_screen(*args):
 
+   destroy_active_frames()
+   zen_frame = tk.Frame(master=window, padx=20, pady=20)
+   back_button = tk.Button(text="Back", master=zen_frame, padx=2, pady=2, font=small_font)
+
+   zen_image = Image.open("flowers.jpg")
+   zen_photo = ImageTk.PhotoImage(zen_image)
+   zen_image_label = Label(zen_frame, image=zen_photo)
+
+   zen_frame.grid()
+   zen_image_label.grid(row=0, column=0)
+   back_button.grid(row=3,column=1)
+
+   def do_back_button(event):
+      rem.do_suspend()
+      run_main_screen()
+
+   back_button.bind("<Button-1>", do_back_button)
 
 def destroy_active_frames():
    for child in window.winfo_children():

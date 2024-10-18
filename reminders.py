@@ -1,4 +1,4 @@
-from win11toast import toast
+from win10toast import toast # type: ignore
 import datetime as dt
 from datetime import *
 import time
@@ -6,6 +6,7 @@ import random
 import re
 import threading
 import sys
+import gui
 
 remind_times = ""
 global suspend
@@ -128,8 +129,11 @@ def begin_notif_time():
 
 def next_rem_time():
     curr_time = time_to_string(datetime.now())
+    print("current time: " + curr_time)
     rem_times = remind_times.splitlines()
+    print("reminder times:")
     for t in rem_times:
+        print(t)
         if (t == curr_time):
             return "0"
         if (curr_time < t):
