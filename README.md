@@ -1,16 +1,18 @@
-personal project with the goal of creating a program that will send a windows notification, with the time slightly randomized so I don't know exactly when it will occur.
+## Short description
+This is a personal project designed to send desktop notifications at slightly randomized times. Inside the app, times of reminders can be added, edited, and saved. The program can run while minimized and send a reminder with a set message at specified times. This was concieved to help me during long class sessions where it's difficult to focus the whole time. The purpose of the randomization is so that I'm not necessarily watching the clock  the notifications were designed to act as a nudge away from distractions.
 
-current state of the program is semi-functional but not "release-ready". 
+## Current state
+The current state of the program is semi-functional, perhaps described as alpha, since it is able to do the core functionality of sending reminders but is unpolished.
 
-Inside the app, times of reminders can be added, edited, and saved. The program can run while minimized and send a reminder with a set message at specified times. Only windows 11 compatible since it relies on windows 11 toast to send desktop notifications.
+### Most recent update:
+  October 23, 2024:
+     The app works on a very basic level again.I've migrated from windows 11 toast to desktop-notifier which claims to support multiple OSs. I don't know how to test that, but my primary concern is polishing the program to work on windows(specifically my personal machines), then extending OS compatability. I think I'm entering a time period where I will be able to make small updates periodically.
 
-Future implementations:
-- Zen mode- displays no information about the time of the next reminder. Only widget is a back button.
-- Customizable reminder message
-- Cleaner GUI and consistent window size
+## More info
+- project_notes.md contains an informal log of my thoughts and updates to the program
 
-Update September 2, 2024:
-  I haven't intended to abandon this project but I also haven't worked on it in a long time. I hope to pick it back up when time permits.
 
-Update Oct 18, 2024:
-    I'm working on this on my laptop right now, which runs windows 10. I started this on my desktop that runs windows 11. I'm realizing this code might not even work on a lot of windows machines. I plan to reinvestigate how to send desktop notifications and, if applicable, add support for both windows 10 and 11. Not sure how easy it would be to incorperate linux distributions or macs into this, but I'll check this out soon.
+
+
+
+

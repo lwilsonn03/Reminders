@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import font as tkFont
 from tkinter import *
-from tkinter import ttk
 import reminders as rem
 import datetime as dt
 from datetime import *

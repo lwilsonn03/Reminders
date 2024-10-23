@@ -1,4 +1,5 @@
-from win10toast import toast # type: ignore
+import asyncio
+from desktop_notifier import DesktopNotifier
 import datetime as dt
 from datetime import *
 import time
@@ -11,6 +12,7 @@ import gui
 remind_times = ""
 global suspend
 suspend = False
+notifier = DesktopNotifier()
 
 try:
     remind_file = open("remindtimes.txt", "r+")
@@ -42,8 +44,8 @@ def close_file():
 
 
 
-def notif():
-    toast("Focus check-in")
+async def notif():
+    await notifier.send(title = "Focus check in", message = "How's it going with focusing?")
 
 
 
@@ -121,7 +123,7 @@ def begin_notif_time():
             t = string_to_time(t)
             curr_time = dt.time(curr_time.hour, curr_time.minute, 0)
             if (t == curr_time):
-                notif()
+                asyncio.run(notif())
         time.sleep(1)
         suspend = check_suspend()
     
