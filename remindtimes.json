@@ -1,0 +1,37 @@
+{
+    "times": [
+        {
+            "requested_time": "12:00",
+            "actual_time": "12:03:43",
+            "hour": 12,
+            "minute": 3,
+            "second": 43,
+            "message_default": true
+        },
+        {
+            "requested_time": "13:30",
+            "actual_time": "13:34:03",
+            "hour": 13,
+            "minute": 34,
+            "second": 3,
+            "message_default": false,
+            "message": "custom message"
+        },
+        {
+            "requested_time": "12:34",
+            "actual_time": "12:34:01",
+            "hour": 12,
+            "minute": 34,
+            "second": 1,
+            "message_default": true
+        },
+        {
+            "requested_time": "17:12",
+            "actual_time": "17:12:00",
+            "hour": 17,
+            "minute": 12,
+            "second": 0,
+            "message_default": true
+        }
+    ]
+}
