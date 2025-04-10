@@ -11,11 +11,12 @@ notifier = DesktopNotifier()
 
 async def notif(msg="default message"):
     await notifier.send(title = "test notif", message = msg)
+    await asyncio.sleep(1) # don't send more than one notif per second
 
 
 async def time_checker():
     while True:
-        print("time checked")
+        logging.debug("time checked")
         next_time_tuple = cdt.get_next_time()
         next_time = next_time_tuple[1]
         indc = next_time_tuple[0]

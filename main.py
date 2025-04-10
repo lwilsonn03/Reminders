@@ -18,7 +18,8 @@ async def run_menu():
         option_a = "1.send toast"
         option_b = "2.add time"
         option_c = "3.view times"
-        print(f"options: {option_a}  {option_b}  {option_c} 0.quit")
+        option_d = "4.delete time"
+        print(f"options: {option_a}  {option_b}  {option_c} {option_d} 0.quit")
         choice = await async_input("")  # Use async_input for non-blocking input
         match choice:
             case "1":
@@ -28,6 +29,8 @@ async def run_menu():
                 cdt.term_time()
             case "3":
                 cdt.view_times()
+            case "4":
+                cdt.del_time_term()
             case "0":
                 sys.exit()
             case _:

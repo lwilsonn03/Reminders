@@ -12,12 +12,17 @@ try:
 except:
     raise FileNotFoundError
 
-def validate_time(input: str):
+def validate_time(input: str, context: str):
+# input is the time to be validated
+# context is a string representing the menu validate_time() is accessed from (view time, delete time, etc)
     input = input.strip()
 
     def inc_format():
         print("incorrect format")
-        term_time()
+        if context == "input":
+            term_time()
+        elif context == "delete":
+            del_time_term()
 
     try:
         logging.debug(f"Received time: \'{input}\'")
@@ -71,7 +76,6 @@ def view_times():
     with open("remindtimes.json", "r") as jf:
         data = json.load(jf)
         for t in data["times"]:
-            
             print(t["requested_time"])    
 
 # returns tuple of (hour, minute, second) randomized
@@ -118,7 +122,7 @@ def time_string_from_ints(h:int, m:int, s:int=0):
 def term_time():
     print("enter 4 integers as a time. For example, 0906 is 9:06am")
     ans = input("input time: ")
-    validate_time(ans)
+    validate_time(ans, "input")
     randomize_and_write_json_time(ans)
 
 
@@ -172,4 +176,23 @@ def time_as_seconds_integer(t:str):
 
     return((3600 * h) + (60 * m) + s)
 
-    
+def time_with_colon_from_four_ints(t: str):
+    h = t[0:2]
+    m = t[2:4]
+    print(f"{h}:{m}")
+    return(f"{h}:{m}")
+
+def del_time_from_file(t:str):
+# t should be received as HH:MM
+    with open('remindtimes.json', 'r') as jf:
+        data = json.load(jf)
+        data["times"] = [entry for entry in data["times"] if entry["requested_time"] != t]
+    with open('remindtimes.json', 'w') as jf:
+        json.dump(data, jf, indent=4)
+
+
+def del_time_term():
+    view_times()
+    ans = input("Delete a time by entering its value as 4 integers: ")
+    validate_time(ans, "delete")
+    del_time_from_file(time_with_colon_from_four_ints(ans))
