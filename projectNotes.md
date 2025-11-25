@@ -92,6 +92,8 @@ Fixed next time bug. I'm not sure what the original issue was since I just rewro
 - checking for inconsistencies and improvements to the code
 - stress test the program
 - refine file structure
+- stress test the program
+- refine file structure
 
 # file structure:
 - main: initiates and closes program

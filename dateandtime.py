@@ -4,6 +4,7 @@ import json
 import random
 
 # Open the file
+# Open the file
 try:
     timefile = open("remindtimes.json", "r+")
     jfile = json.load(timefile)
@@ -16,8 +17,16 @@ def validate_time(input: str, context: str):
     input = input.strip()
 
     # defines what the method does when it finds an incorrect time format
+    # defines what the method does when it finds an incorrect time format
     def inc_format():
         print("incorrect format")
+        match context:
+            case "input":
+                term_time()
+            case "delete":
+                del_time_term()
+            case "format_time":
+                raise ValueError("The entered time is invalid")
         match context:
             case "input":
                 term_time()
@@ -39,8 +48,82 @@ def validate_time(input: str, context: str):
         h_int, m_int = int(h_str), int(m_str)
         assert(m_int > 0 and m_int < 60)
         assert(h_int > -1 and h_int < 24)
+        assert(m_int > 0 and m_int < 60)
+        assert(h_int > -1 and h_int < 24)
     except:
         inc_format()
+
+
+def format_time(time, current_format: str, new_format: str):
+# designed to handle all time format conversions.
+# new_format and current_format should be one of the following values:
+#   "hh:mm", HH:MM
+#   "hhmm", HHMM
+#   "hh:mm:ss" HH:MM:SS
+#   "json", (requested time, actual time, hour, minute, second, message default, message(optional))
+#   "seconds", time as seconds from midnight (useful for easy comparison of if a time is earlier/later than another)
+           
+# 1: convert the time to hours, minutes, seconds
+    h, m, s = 0, 0, 0
+
+    match(current_format):
+        case "json":
+            h = time["hour"]
+            m = time["minute"]
+            s = time["second"]
+        case "hh:mm":
+            h = int(time[0:2])
+            m = int(time[3:5])
+        case "hhmm":
+            h = int(time[0:2])
+            m = int(time[2:4])
+        case "hh:mm:ss":
+            h = int(time[0:2])
+            m = int(time[3:5])
+            s = int(time[6:8]) 
+        case "seconds":
+            time = int(time)
+            h = int(time/3600)
+            m = int((time-(h*3600))/60)
+            s = int(time%60)
+        case _:
+            raise ValueError(f"current format string, {current_format}, was unrecognized")
+
+# 2: validate h/m/s to ensure current_format matched time format
+    try:
+        assert(h >= 0 and h < 24)
+        assert(m >= 0 and m < 60)
+        assert(s >= 0 and s < 60)
+    except:
+        raise ValueError(f"current format was entered as {current_format}, but time {time} doesn't appear to match1")
+
+# 3: convert to new time
+    new_time = ""
+
+    def add_zero(i: int):
+        # adds leading zero if needed for string based times (ex. 9 -> 09)
+        if i < 10 and i > -1:
+            return f"0{i}"
+        else:
+            return i
+
+    match(new_format):
+        case "json":
+            # if the new time should be json, more information is needed like what is the requested time vs actual alarm time?
+            new_time = "placeholder"
+        case "hh:mm":
+            new_time = f"{add_zero(h)}:{add_zero(m)}"
+        case "hhmm":
+            new_time = f"{add_zero(h)}{add_zero(m)}"
+        case "hh:mm:ss":
+            new_time = f"{add_zero(h)}:{add_zero(m)}:{add_zero(s)}"
+        case "seconds":
+            new_time = ((h*3600) + (m*60) + s)
+        case _:
+            raise ValueError(f"new format string, {new_format}, was unrecognized")
+    
+    return new_time
+
 
 
 def format_time(time, current_format: str, new_format: str):
@@ -182,6 +265,7 @@ def time_string_from_ints(h:int, m:int, s:int=0):
     return f"{h}:{m}:{s}"
 
 
+
 def term_time():
     print("enter 4 integers as a time. For example, 0906 is 9:06am")
     ans = input("input time: ")
@@ -224,5 +308,7 @@ def del_time_term():
     view_times()
     ans = input("Delete a time by entering its value as 4 integers: ")
     validate_time(ans, "delete")
+    ans = format_time(ans, "hhmm", "hh:mm")
+    del_time_from_file(str(ans))
     ans = format_time(ans, "hhmm", "hh:mm")
     del_time_from_file(str(ans))
