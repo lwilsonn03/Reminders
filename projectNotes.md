@@ -48,17 +48,54 @@ I'm going to push this version now despite the fact that it needs more refinemen
 
 ---
 
-# immediate plans:
-- correct number of notifications
-- deleting times without directly editing json file
+### April 9, 2025:
+I fixed the toast spamming bug and I added the ability to delete a time.
 
-# future functionality:
+---
+
+### April 10, 2025:
+I'm going to create one method to handle all the time format switching that currently exists.here's the current formats the program uses:
+1. "hhmm", HH:MM
+2. "hhmmss", HH:MM:SS
+3. "json", requested time, actual time, h, m, s, message default, message
+4. "seconds", time in seconds after midnight
+time_format(time, format_to_convert_to #var name will be simpler)
+
+methods that can be replaced:
+time_with_colon_from_four_ints()
+time_as_seconds_integer()
+time_string_from_ints()
+
+### October 23, 2025:
+Revisiting this. Going to dive back into the format_time() function. also I've been using method when I mean function. 
+
+I think format_time works, with the exception of converting to json. I wrote plenty of tests in test.py for the express purpose of validating this function.
+
+### October 24, 2025:
+Finished integrating format_time and added input validation. Cleaned up test.py. Verified that sending toasts still works as expected just in case it didn't.
+Discovered bug: program won't send multiple notifs in the same session for different times, likely due to its internal calculation of the next time not updating.
+
+### October 27, 2025:
+Worked on fixing the next time bug. Still haven't figured out why the next time isn't updating. 
+
+### November 21, 2025:
+Worked on fixing next time bug.
+
+### November 25, 2025:
+Fixed next time bug. I'm not sure what the original issue was since I just rewrote the function after noticing how complicated it was. The program can now correctly send multiple reminders in the same session since the next time to send a reminder correctly updates.
+
+# Left off:
+- integrate time_string_from_ints() into format_time
+
+# future ideas:
 - simple tkinter gui
 - checking for inconsistencies and improvements to the code
+- stress test the program
+- refine file structure
 
 # file structure:
 - main: initiates and closes program
 - notifs: handles toasts and sends them out at correct times
 - dateandtime: handles user entry of time data and enters it to the json file
 - util: broad utilities
-- test: seperate file for testing
+- test: file with tests to validate program performance

@@ -6,8 +6,9 @@ I've started over from scratch because I wanted to redesign several main element
 
 ### Most recent update:
 
-April 9, 2025:
-I fixed the toast spamming bug and I added the ability to delete a time.
+October 25, 2025:
+Refactored many functions on the back end to handle time format conversions more easily in one function than in several functions. Standardized time formats used internally.
+Added tests to test.py that test the new format_time() function.
                                                                    
 
 ## More info

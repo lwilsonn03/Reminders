@@ -1,7 +1,3 @@
-'''
-Main
-'''
-
 from desktop_notifier import DesktopNotifier
 import asyncio
 import sys
