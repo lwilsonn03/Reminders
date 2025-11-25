@@ -5,10 +5,8 @@ This is a personal project designed to send desktop notifications at slightly ra
 I've started over from scratch because I wanted to redesign several main elements of the program. As a result, this current pushed version is lacking in features compared to the previous, but I'm much more confident in the foundations I'm building. Right now the program handles 4 simple tasks, all in the terminal: sending a toast, adding a time with correct json formatting to remindtimes.json, reading back those times, and deleting requested times. As long as the program is running, it does send toasts at the correct time. Remindtimes.json stores the requested time and the randomized actual time, so that the program can display the time the user requested even when that's not the exact time the toast will be sent. 
 
 ### Most recent update:
-
-October 25, 2025:
-Refactored many functions on the back end to handle time format conversions more easily in one function than in several functions. Standardized time formats used internally.
-Added tests to test.py that test the new format_time() function.
+November 25, 2025:
+Fixed next time bug. I'm not sure what the original issue was since I just rewrote the function after noticing how complicated it was. The program can now correctly send multiple reminders in the same session since the next time to send a reminder correctly updates.
                                                                    
 
 ## More info
